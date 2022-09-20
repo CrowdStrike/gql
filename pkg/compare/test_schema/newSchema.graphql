@@ -1,0 +1,17 @@
+type Query {
+    book(isbn: String!): [Book]
+    books: [Book]
+    library(id: ID!): Library
+}
+
+type Library {
+    id: ID!
+    name: String
+    books: [Book]!
+}
+
+type Book {
+    isbn: String!
+    title: String
+    similarBooks: [Book]!
+}

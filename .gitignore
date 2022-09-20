@@ -1,0 +1,72 @@
+#src/bitbucket.org
+#src/github.com
+#src/code.google.com
+
+# Web assests
+web/
+web.tar.gz
+
+# IntelliJ file
+.idea
+go.iml
+*.test
+*.iml
+
+# Visual Studio Code files
+.vscode
+.favorites.json
+
+# Eclipse files
+.project
+.settings
+
+# Stupid OSX
+._.DS_Store
+.DS_Store
+
+# Hide fuse file for sshfs mounting from OSX
+.fuse_*
+
+# debian packages
+*.deb
+
+# Python
+*.pyc
+
+# Log files
+*.log
+
+# Distribution files
+dist/
+
+# Binary files
+bin/
+
+# Sonarqube
+.scannerwork/
+
+# Test coverage
+*.coverprofile
+coverage.out
+coverage.stack
+coverage.html
+coverage.xml
+
+# Unit test
+*checkstyle.xml
+*junit.xml
+report.json
+
+# Snyk
+snyk.json
+
+# Crash log files
+crash.log
+
+# Misc.
+/environ.rc*
+scrap*.*
+
+# go module workspace file
+go.work
+
