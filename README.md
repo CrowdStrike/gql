@@ -138,7 +138,7 @@ between line x and y will be ignored from the output.
 You can use `#lint-disable-line rule1` to disable rule1 for a specific line. This only is applicable if rule1 is applied 
 for rest of the schema. If rule1 is not one among the rules passed then this has no effect on output.
 
-##compare
+## compare
 compare command compares two schema files and returns all the differences. It is also built to support Apollo federation
 specification and can be used to find breaking changes in schema.
   
