@@ -1,5 +1,10 @@
-type Query {
-    book(isbn: String!): [Book]
+directive @stream on FIELD
+directive @transform(from: String!) on FIELD
+
+union body = Image | text
+
+extend type Query {
+    book(isbn: String!): Book
     books: [Book]
     library(id: ID!): Library
 }
@@ -10,7 +15,7 @@ type Library {
     books: [Book]!
 }
 
-type Book {
+type Book @key(fields: "isbn") {
     isbn: String!
     title: String
     similarBooks: [Book]!

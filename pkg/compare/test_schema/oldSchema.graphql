@@ -1,4 +1,9 @@
-type Query {
+directive @stream on FIELD
+directive @transform(from: String) on FIELD
+
+union body = Image
+
+extend type Query {
     book(isbn: String!): Book
     library(id: ID!): Library
 }
@@ -8,7 +13,7 @@ type Library {
     name: String
 }
 
-type Book {
+type Book @key(fields: "isbn") {
     isbn: String
     title: String!
     year: Int
