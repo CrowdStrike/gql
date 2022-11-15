@@ -10,26 +10,19 @@ jobs:
   gqltools:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out code into the Go module directory
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
       - uses: actions/setup-go@v3
         with:
           go-version: 1.18
 
-      - name: Get Go dependencies
-        run: go get -v -t -d ./...
+      - name: lint
+        uses: golangci/golangci-lint-action@v3.3.1
+        with:
+          github-token: ${{ github.token }}
 
       - name: test
         run: go test -v -race ./...
-
-      - name: Run golangci-lint
-        uses: golangci/golangci-lint-action@v3
-        with:
-          args: --timeout=3m12s
-          skip-go-installation: true
-          skip-pkg-cache: true
-          skip-build-cache: true
 
       - name: "Check: go fmt"
         run: |
@@ -44,6 +37,6 @@ jobs:
               exit 1
           fi
 
-      - name: Build
+      - name: build
         run: |
           make build
