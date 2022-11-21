@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/CrowdStrike/gql/cmd/compare"
-	"github.com/CrowdStrike/gql/cmd/linter"
+	"github.com/CrowdStrike/gqltools/cmd/compare"
+	"github.com/CrowdStrike/gqltools/cmd/linter"
 
 	"github.com/spf13/cobra"
 )

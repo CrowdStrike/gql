@@ -6,7 +6,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/CrowdStrike/gql/pkg/linter"
+	"github.com/CrowdStrike/gqltools/pkg/linter"
 
 	"github.com/vektah/gqlparser/v2/ast"
 	"github.com/vektah/gqlparser/v2/parser"
