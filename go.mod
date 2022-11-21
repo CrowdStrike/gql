@@ -4,7 +4,7 @@ go 1.18
 
 require (
 	github.com/spf13/cobra v1.6.1
-	github.com/vektah/gqlparser/v2 v2.5.0
+	github.com/vektah/gqlparser/v2 v2.5.1
 )
 
 require (
