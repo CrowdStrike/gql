@@ -1,6 +1,6 @@
 package main
 
-import "github.com/CrowdStrike/gqltools/cmd"
+import "github.com/CrowdStrike/gql/cmd"
 
 func main() {
 	cmd.Execute()

@@ -1,4 +1,4 @@
-module github.com/CrowdStrike/gqltools
+module github.com/CrowdStrike/gql
 
 go 1.18
 

@@ -1,4 +1,4 @@
-project_name: gqltools
+project_name: gql
 before:
   hooks:
     - go mod tidy

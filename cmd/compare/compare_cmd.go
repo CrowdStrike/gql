@@ -6,8 +6,8 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/CrowdStrike/gqltools/pkg/compare"
-	"github.com/CrowdStrike/gqltools/utils"
+	"github.com/CrowdStrike/gql/pkg/compare"
+	"github.com/CrowdStrike/gql/utils"
 )
 
 var (

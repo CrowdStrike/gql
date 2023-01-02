@@ -6,9 +6,9 @@ import (
 	"os"
 	"strings"
 
-	"github.com/CrowdStrike/gqltools/pkg/linter"
+	"github.com/CrowdStrike/gql/pkg/linter"
 
-	"github.com/CrowdStrike/gqltools/utils"
+	"github.com/CrowdStrike/gql/utils"
 
 	"github.com/spf13/cobra"
 )

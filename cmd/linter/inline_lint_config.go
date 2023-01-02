@@ -5,7 +5,7 @@ import (
 
 	"github.com/vektah/gqlparser/v2/ast"
 
-	"github.com/CrowdStrike/gqltools/cmd/linter/lexer"
+	"github.com/CrowdStrike/gql/cmd/linter/lexer"
 )
 
 type inlineLintConfigMetadata struct {
