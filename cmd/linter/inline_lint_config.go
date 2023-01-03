@@ -3,9 +3,9 @@ package linter
 import (
 	"strings"
 
-	"github.com/CrowdStrike/gql/cmd/linter/lexer"
-
 	"github.com/vektah/gqlparser/v2/ast"
+
+	"github.com/CrowdStrike/gql/cmd/linter/lexer"
 )
 
 type inlineLintConfigMetadata struct {
