@@ -70,7 +70,6 @@ func FindLintErrors(schemaFileContents map[string][]byte, rulesToApply []linter.
 			exitStatus |= 1 // If there's error for any file, exit code should be 1
 		}
 	}
-
 	if errorCount == 0 {
 		fmt.Printf("Schema has no lint errors! 🎉\n")
 	} else {
@@ -102,7 +101,6 @@ func FindTheRulesToApply(rulesString []string) ([]linter.LintRuleFunc, error) {
 		if !matchFound {
 			return nil, fmt.Errorf("invalid rule[%s] passed", inputRuleName)
 		}
-
 	}
 	return rulesToApply, nil
 }
