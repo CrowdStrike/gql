@@ -7,9 +7,7 @@ import (
 	"strings"
 
 	"github.com/CrowdStrike/gql/pkg/linter"
-
 	"github.com/CrowdStrike/gql/utils"
-
 	"github.com/spf13/cobra"
 )
 
@@ -28,7 +26,7 @@ func NewLintCmd() *cobra.Command {
 		Run: func(cmd *cobra.Command, args []string) {
 			schemaFileContents := make(map[string][]byte)
 
-			rulesToApply, err := findTheRulesToApply(passedRules)
+			rulesToApply, err := FindTheRulesToApply(passedRules)
 			if err != nil {
 				fmt.Printf("failed to parse the rules to apply string=%s, error:%v", passedRules, err)
 				//Exit with error printed to stderr
@@ -51,21 +49,7 @@ func NewLintCmd() *cobra.Command {
 				}
 			}
 
-			exitStatus := 0
-			errorCount := 0
-			for filename, schemaFileContent := range schemaFileContents {
-				if lintErrors := Lint(filename, string(schemaFileContent), rulesToApply); len(lintErrors) != 0 {
-					errorCount += len(lintErrors)
-					errorPresenter(filename, lintErrors)
-					exitStatus |= 1 // If there's error for any file, exit code should be 1
-				}
-			}
-
-			if errorCount == 0 {
-				fmt.Printf("Schema has no lint errors! 🎉\n")
-			} else {
-				fmt.Printf("❌ Total lint errors found: %d\n", errorCount)
-			}
+			exitStatus := FindLintErrors(schemaFileContents, rulesToApply)
 
 			os.Exit(exitStatus) // success
 		},
@@ -75,7 +59,27 @@ func NewLintCmd() *cobra.Command {
 	return lintCmd
 }
 
-func findTheRulesToApply(rulesString []string) ([]linter.LintRuleFunc, error) {
+// FindLintErrors find lint errors in schema files applying the supplied rules
+func FindLintErrors(schemaFileContents map[string][]byte, rulesToApply []linter.LintRuleFunc) int {
+	exitStatus := 0
+	errorCount := 0
+	for filename, schemaFileContent := range schemaFileContents {
+		if lintErrors := Lint(filename, string(schemaFileContent), rulesToApply); len(lintErrors) != 0 {
+			errorCount += len(lintErrors)
+			errorPresenter(filename, lintErrors)
+			exitStatus |= 1 // If there's error for any file, exit code should be 1
+		}
+	}
+	if errorCount == 0 {
+		fmt.Printf("Schema has no lint errors! 🎉\n")
+	} else {
+		fmt.Printf("❌ Total lint errors found: %d\n", errorCount)
+	}
+	return exitStatus
+}
+
+// FindTheRulesToApply convert matching string rules to LintRuleFunc
+func FindTheRulesToApply(rulesString []string) ([]linter.LintRuleFunc, error) {
 	rulesToApply := make([]linter.LintRuleFunc, 0)
 	if len(rulesString) == 0 {
 		for _, rule := range linter.AllTheRules {
@@ -97,7 +101,6 @@ func findTheRulesToApply(rulesString []string) ([]linter.LintRuleFunc, error) {
 		if !matchFound {
 			return nil, fmt.Errorf("invalid rule[%s] passed", inputRuleName)
 		}
-
 	}
 	return rulesToApply, nil
 }
