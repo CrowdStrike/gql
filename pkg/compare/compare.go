@@ -134,6 +134,45 @@ type Change struct {
 	position         *ast.Position
 }
 
+// GetPosition get change position
+func (c *Change) GetPosition() *ast.Position {
+	return c.position
+}
+
+// GetMessage get change message
+func (c *Change) GetMessage() string {
+	return c.message
+}
+
+// GetChangeCriticalityLevel get change criticality level
+func (c *Change) GetChangeCriticalityLevel() Criticality {
+	return c.criticalityLevel
+}
+
+// GetChangeType get change type
+func (c *Change) GetChangeType() ChangeType {
+	return c.changeType
+}
+
+// GetPath get change path
+func (c *Change) GetPath() string {
+	return c.path
+}
+
+// string get change criticality level string
+func (c Criticality) String() string {
+	switch c {
+	case Breaking:
+		return "Breaking"
+	case Dangerous:
+		return "Dangerous"
+	case NonBreaking:
+		return "NonBreaking"
+	default:
+		return ""
+	}
+}
+
 // FindChangesInSchemas compares two schemas, returns the list of all changes made in the second schema
 func FindChangesInSchemas(oldSchema *ast.SchemaDocument, newSchema *ast.SchemaDocument) []*Change {
 	var changes []*Change
