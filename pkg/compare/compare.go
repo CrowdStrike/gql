@@ -89,6 +89,12 @@ const (
 	InputFieldTypeChanged ChangeType = "INPUT_FIELD_TYPE_CHANGED"
 	// ObjectTypeInterfaceAdded Object Type Interface Added
 	ObjectTypeInterfaceAdded ChangeType = "OBJECT_TYPE_INTERFACE_ADDED"
+	// InputFieldDeprecationAdded Field Deprecation Added
+	InputFieldDeprecationAdded ChangeType = "INPUT_FIELD_DEPRECATION_ADDED"
+	// InputFieldDeprecationRemoved Field Deprecation Removed
+	InputFieldDeprecationRemoved ChangeType = "INPUT_FIELD_DEPRECATION_REMOVED"
+	// InputFieldDeprecationReasonChanged Field Deprecation Reason Changed
+	InputFieldDeprecationReasonChanged ChangeType = "INPUT_FIELD_DEPRECATION_REASON_CHANGED"
 	// ObjectTypeInterfaceRemoved Object Type Interface Removed
 	ObjectTypeInterfaceRemoved ChangeType = "OBJECT_TYPE_INTERFACE_REMOVED"
 	// SchemaQueryTypeChanged Schema Query Type Changed
@@ -624,14 +630,18 @@ func checkEnumValueDeprecationChanged(oDef *ast.Definition, nv *ast.EnumValueDef
 			position:         nv.Position,
 		})
 	}
-	if oDep != nil && nDep != nil && oDep.Arguments.ForName("reason") != nDep.Arguments.ForName("reason") {
-		changes = append(changes, &Change{
-			changeType:       EnumValueDeprecationReasonChanged,
-			criticalityLevel: NonBreaking,
-			message:          fmt.Sprintf("Enum value '%s' deprecation reason changed in enum '%s' ", ov.Name, oDef.Name),
-			path:             fmt.Sprintf("%s.%s", oDef.Name, ov.Name),
-			position:         nv.Position,
-		})
+	if oDep != nil && nDep != nil {
+		oReason := oDep.Arguments.ForName("reason")
+		nReason := nDep.Arguments.ForName("reason")
+		if oReason != nil && nReason != nil && oReason.Value.String() != nReason.Value.String() {
+			changes = append(changes, &Change{
+				changeType:       EnumValueDeprecationReasonChanged,
+				criticalityLevel: NonBreaking,
+				message:          fmt.Sprintf("Enum value '%s' deprecation reason changed in enum '%s' ", ov.Name, oDef.Name),
+				path:             fmt.Sprintf("%s.%s", oDef.Name, ov.Name),
+				position:         nv.Position,
+			})
+		}
 	}
 	return changes
 }
@@ -835,8 +845,12 @@ func checkFieldDeprecationChanged(oDef *ast.Definition, nf *ast.FieldDefinition,
 	oDep := of.Directives.ForName(deprecatedDirective)
 	nDep := nf.Directives.ForName(deprecatedDirective)
 	if oDep == nil && nDep != nil {
+		changeType := FieldDeprecationAdded
+		if oDef.Kind == ast.InputObject {
+			changeType = InputFieldDeprecationAdded
+		}
 		changes = append(changes, &Change{
-			changeType:       FieldDeprecationAdded,
+			changeType:       changeType,
 			criticalityLevel: Dangerous,
 			message:          fmt.Sprintf("Field '%s.%s' deprecated in %s ", oDef.Name, of.Name, oDef.Kind),
 			path:             fmt.Sprintf("%s.%s", oDef.Name, of.Name),
@@ -844,22 +858,34 @@ func checkFieldDeprecationChanged(oDef *ast.Definition, nf *ast.FieldDefinition,
 		})
 	}
 	if oDep != nil && nDep == nil {
+		changeType := FieldDeprecationRemoved
+		if oDef.Kind == ast.InputObject {
+			changeType = InputFieldDeprecationRemoved
+		}
 		changes = append(changes, &Change{
-			changeType:       FieldDeprecationRemoved,
+			changeType:       changeType,
 			criticalityLevel: Dangerous,
 			message:          fmt.Sprintf("Field '%s.%s' deprecation removed in %s ", oDef.Name, of.Name, oDef.Kind),
 			path:             fmt.Sprintf("%s.%s", oDef.Name, of.Name),
 			position:         nf.Position,
 		})
 	}
-	if oDep != nil && nDep != nil && oDep.Arguments.ForName("reason") != nDep.Arguments.ForName("reason") {
-		changes = append(changes, &Change{
-			changeType:       FieldDeprecationReasonChanged,
-			criticalityLevel: NonBreaking,
-			message:          fmt.Sprintf("Field '%s.%s' deprecation reason changed in %s ", oDef.Name, of.Name, oDef.Kind),
-			path:             fmt.Sprintf("%s.%s", oDef.Name, of.Name),
-			position:         nf.Position,
-		})
+	if oDep != nil && nDep != nil {
+		oReason := oDep.Arguments.ForName("reason")
+		nReason := nDep.Arguments.ForName("reason")
+		if oReason != nil && nReason != nil && oReason.Value.String() != nReason.Value.String() {
+			changeType := FieldDeprecationReasonChanged
+			if oDef.Kind == ast.InputObject {
+				changeType = InputFieldDeprecationReasonChanged
+			}
+			changes = append(changes, &Change{
+				changeType:       changeType,
+				criticalityLevel: NonBreaking,
+				message:          fmt.Sprintf("Field '%s.%s' deprecation reason changed in %s ", oDef.Name, of.Name, oDef.Kind),
+				path:             fmt.Sprintf("%s.%s", oDef.Name, of.Name),
+				position:         nf.Position,
+			})
+		}
 	}
 	return changes
 }
@@ -1004,6 +1030,8 @@ func changeInInputFields(oDef *ast.Definition, nDef *ast.Definition) []*Change {
 					position:         nf.Position,
 				})
 			}
+			//Check deprecation changes
+			changes = append(changes, checkFieldDeprecationChanged(oDef, nf, of)...)
 			//check change in field directives
 			changes = append(changes, changeInTypeFieldDirectives(of.Directives, nf.Directives, fmt.Sprintf("%s.%s", nDef.Name, nf.Name), nf.Position)...)
 		}
