@@ -820,6 +820,57 @@ func TestCompareInputObjectFields(t *testing.T) {
 			criticality: NonBreaking,
 			ChangeType:  InputFieldTypeChanged,
 		},
+		{
+			name: "Input field deprecation added",
+			oldSchema: `
+			input UserInput {
+				name : String 
+				newName: String!
+			}
+			`,
+			newSchema: `
+			input UserInput {
+				name : String @deprecated(reason: "use newName")
+				newName: String!
+			}
+			`,
+			criticality: Dangerous,
+			ChangeType:  InputFieldDeprecationAdded,
+		},
+		{
+			name: "Input field deprecation removed",
+			oldSchema: `
+			input UserInput {
+				name : String @deprecated(reason: "some reason")
+				newName: String!
+			}
+			`,
+			newSchema: `
+			input UserInput {
+				name : String 
+				newName: String!
+			}
+			`,
+			criticality: Dangerous,
+			ChangeType:  InputFieldDeprecationRemoved,
+		},
+		{
+			name: "Input field deprecation reason changed",
+			oldSchema: `
+			input UserInput {
+				name : String @deprecated(reason: "some reason")
+				newName: String!
+			}
+			`,
+			newSchema: `
+			input UserInput {
+				name : String  @deprecated(reason: "some reason changed")
+				newName: String!
+			}
+			`,
+			criticality: NonBreaking,
+			ChangeType:  InputFieldDeprecationReasonChanged,
+		},
 	}
 
 	for _, tt := range tests {
